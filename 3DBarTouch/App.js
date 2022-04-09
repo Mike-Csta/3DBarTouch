@@ -1,11 +1,12 @@
+import React, { useState, useEffect, useRef } from "react";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
-
+import { StyleSheet, Text, View, Animated } from "react-native";
+import { Barometer } from "expo-sensors";
+import One from "./One";
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text>Elo mordo</Text>
-      <StatusBar style="auto" />
+      <One />
     </View>
   );
 }
@@ -13,8 +14,10 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    position: "relative",
     backgroundColor: "#aaa",
     alignItems: "center",
     justifyContent: "center",
   },
+  text: { color: "white", fontSize: 30, fontWeight: "bold" },
 });
