@@ -1,20 +1,21 @@
 import React, { useState, useEffect, useRef } from "react";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, Animated } from "react-native";
+import { StyleSheet, Text, View, Animated, Vibration } from "react-native";
 import { Barometer } from "expo-sensors";
-const One = () => {
+const Two = () => {
   const [constData, setConstData] = useState();
   const [data, setData] = useState(20);
+  const [data2, setData2] = useState(20);
 
-  const move = useRef(new Animated.Value(0)).current;
+  // const move = useRef(new Animated.Value(0)).current;
 
-  const fade = (value, duration, useref) => {
-    Animated.timing(useref, {
-      toValue: value,
-      duration: duration,
-      useNativeDriver: false,
-    }).start();
-  };
+  // const fade = (value, duration, useref) => {
+  //   Animated.timing(useref, {
+  //     toValue: value,
+  //     duration: duration,
+  //     useNativeDriver: false,
+  //   }).start();
+  // };
 
   useEffect(() => {
     Barometer.addListener(({ pressure, relativeAltitude }) => {
@@ -27,12 +28,7 @@ const One = () => {
 
   setTimeout(() => {
     Barometer.addListener(({ pressure, relativeAltitude }) => {
-      setData(((pressure - constData) * 25 * -70 + 100).toFixed(0));
-      // setConstData(pressure);
-    });
-    Barometer.addListener(({ pressure, relativeAltitude }) => {
-      // setConstData(pressure);
-      fade(data < 20 ? data : 20, 200, move);
+      setData(((constData / pressure - 1) * 1000000).toFixed(5));
     });
     Barometer.setUpdateInterval(5);
   }, 300);
@@ -40,11 +36,15 @@ const One = () => {
   const kwadrat = function () {
     return {
       position: "absolute",
-      width: "100%",
-      height: 5000,
-      backgroundColor: "#ccc",
-      bottom: -4950,
-      transform: [{ translateY: move }],
+      width: 170,
+      height: 80,
+      backgroundColor:
+        data * -1 > 150 ? (data * -1 > 500 ? "red" : "orange") : "green",
+      color:
+        data * -1 > 150
+          ? (data * -1 > 500 ? "red" : "orange", Vibration.vibrate(33, false))
+          : "green",
+      bottom: 200,
       // marginBottom: move,
       zIndex: -1,
     };
@@ -53,8 +53,8 @@ const One = () => {
     <View style={styles.container}>
       <Text style={styles.text}>Siła nacisku</Text>
       <Text style={styles.text}>{data < 0 ? data * -1 : 0}g</Text>
-      <Text style={styles.text}>data: {data}g</Text>
-      <Text style={styles.text}>constData: {constData}g</Text>
+      {/* <Text style={styles.text}>data: {data2}g</Text> */}
+      {/* <Text style={styles.text}>constData: {constData}g</Text> */}
       <StatusBar style="auto" />
       <Animated.View style={kwadrat()}></Animated.View>
     </View>
@@ -65,11 +65,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     position: "relative",
-    backgroundColor: "#bbb",
+    backgroundColor: "#121212",
     alignItems: "center",
     justifyContent: "center",
   },
   text: { color: "white", fontSize: 30, fontWeight: "bold" },
 });
 
-export default One;
+export default Two;
